@@ -1,5 +1,6 @@
-package itesm.mx.proyectofinal;
+package itesm.mx.proyectofinal.principal;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,10 +10,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-public class MainActivity extends AppCompatActivity implements PantallaUsuario.IMyUserScreen {
+import itesm.mx.proyectofinal.MenuDeActividades;
+import itesm.mx.proyectofinal.PantallaGlosario;
+import itesm.mx.proyectofinal.PantallaMano;
+import itesm.mx.proyectofinal.PantallaP2p;
+import itesm.mx.proyectofinal.R;
+import itesm.mx.proyectofinal.extras.IMyScreen;
+import itesm.mx.proyectofinal.usuario.PerfilControlador;
+
+public class MainActivity extends AppCompatActivity implements IMyScreen {
     public static String PACKAGE_NAME;
     ImageView fondo;
-    Button gamemano, gamep2p;
+    Fragment fragmentoAnterior;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -25,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements PantallaUsuario.I
                     fondo.setVisibility(View.INVISIBLE);
                     return true;
                 case R.id.navigation_dashboard:
-                    cargarDummy();
+                    cargarLista();
                     fondo.setVisibility(View.INVISIBLE);
                     return true;
                 case R.id.navigation_notifications:
@@ -47,57 +56,26 @@ public class MainActivity extends AppCompatActivity implements PantallaUsuario.I
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fondo = (ImageView) findViewById(R.id.imageView);
+        fondo = findViewById(R.id.imageView);
         PACKAGE_NAME = getApplicationContext().getPackageName();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        gamemano = findViewById(R.id.botonmano);
-        gamep2p = findViewById(R.id.botonp2p);
-        //gamemano.setOnClickListener(this);
-        //gamep2p.setOnClickListener(this);
     }
-/*
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.c:
-                cargarUsuario();
-                fondo.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.b:
-                cargarDummy();
-                fondo.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.a:
-                cargarGlosario();
-                fondo.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.botonmano:
-                cargarmano();
-                break;
-            case R.id.botonp2p:
-                cargarp2p();
-                break;
-        }
-    }
-*/
     private void cargarUsuario() {
         if (getFragmentManager().findFragmentById(R.id.pantalla) != null) {
-            getFragmentManager().beginTransaction().replace(R.id.pantalla, new PantallaUsuario()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.pantalla, new PerfilControlador()).commit();
         } else {
-            getFragmentManager().beginTransaction().add(R.id.pantalla, new PantallaUsuario()).commit();
+            getFragmentManager().beginTransaction().add(R.id.pantalla, new PerfilControlador()).commit();
         }
 
     }
-
-    private void cargarDummy() {
+    private void cargarLista() {
         if (getFragmentManager().findFragmentById(R.id.pantalla) != null) {
-            getFragmentManager().beginTransaction().replace(R.id.pantalla, new PantallaDummy()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.pantalla, new MenuDeActividades()).commit();
         } else {
-            getFragmentManager().beginTransaction().add(R.id.pantalla, new PantallaDummy()).commit();
+            getFragmentManager().beginTransaction().add(R.id.pantalla, new MenuDeActividades()).commit();
         }
     }
-
     private void cargarGlosario() {
         if (getFragmentManager().findFragmentById(R.id.pantalla) != null) {
             getFragmentManager().beginTransaction().replace(R.id.pantalla, new PantallaGlosario()).commit();
@@ -107,27 +85,18 @@ public class MainActivity extends AppCompatActivity implements PantallaUsuario.I
 
     }
 
-    private void cargarmano() {
-        if (getFragmentManager().findFragmentById(R.id.pantalla) != null) {
-            getFragmentManager().beginTransaction().replace(R.id.pantalla, new PantallaMano()).commit();
-        } else {
-            getFragmentManager().beginTransaction().add(R.id.pantalla, new PantallaMano()).commit();
-        }
-
-    }
-
-    private void cargarp2p() {
-        if (getFragmentManager().findFragmentById(R.id.pantalla) != null) {
-            getFragmentManager().beginTransaction().replace(R.id.pantalla, new PantallaP2p()).commit();
-        } else {
-            getFragmentManager().beginTransaction().add(R.id.pantalla, new PantallaP2p()).commit();
-        }
-    }
-
     @Override
-    public void endMyLife() {
-
+    public void onBackPressed(){
+        if(fragmentoAnterior != null){
+            getFragmentManager().beginTransaction().replace(R.id.pantalla, fragmentoAnterior).commit();
+        }
     }
-
-
+    @Override
+    public void cambiarPantalla(Fragment siguientePantalla) {
+        getFragmentManager().beginTransaction().replace(R.id.pantalla, siguientePantalla).commit();
+    }
+    @Override
+    public void establecerPantallaAnterior(Fragment pantallaAnterior) {
+        fragmentoAnterior = pantallaAnterior;
+    }
 }

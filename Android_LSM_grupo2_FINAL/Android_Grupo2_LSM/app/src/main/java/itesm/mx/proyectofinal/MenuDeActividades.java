@@ -11,30 +11,30 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.support.v7.app.AppCompatActivity;
 
+import itesm.mx.proyectofinal.extras.IMyScreen;
+
 /**
  * Created by Martin RB on 27/03/2018.
  */
 
-public class PantallaDummy extends Fragment implements View.OnClickListener {
+public class MenuDeActividades extends Fragment implements View.OnClickListener {
 
     Button botonpantallamano;
     Button botonpantallap2p;
     TextView text;
     Activity a;
-    PantallaUsuario.IMyUserScreen userScreen;
+    IMyScreen userScreen;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         return inflater.inflate(R.layout.layout_juegos, container, false);
-
-
     }
     @Override
     public void onAttach(Context con) {
         super.onAttach(con);
         a = (Activity) con;
         try {
-            userScreen = (PantallaUsuario.IMyUserScreen) a;
+            userScreen = (IMyScreen) a;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,20 +43,18 @@ public class PantallaDummy extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(Bundle b) {
         super.onActivityCreated(b);
-        //text = getActivity().findViewById(R.id.texttext);
-        //text.setOnClickListener(this);
         botonpantallamano=a.findViewById(R.id.botonmano);
         botonpantallap2p=a.findViewById(R.id.botonp2p);
         botonpantallap2p.setOnClickListener(this);
         botonpantallamano.setOnClickListener(this);
+
+        userScreen.establecerPantallaAnterior(null);
     }
 
     @Override
     public void onClick(View v) {
 
         switch (v.getId()){
-
-
             case R.id.botonmano:
             {
                 if (getFragmentManager().findFragmentById(R.id.pantalla) != null) {
@@ -70,7 +68,7 @@ public class PantallaDummy extends Fragment implements View.OnClickListener {
             };
 
 
-                break;
+            break;
             case R.id.botonp2p:
             {
                 if (getFragmentManager().findFragmentById(R.id.pantalla) != null) {
@@ -83,7 +81,7 @@ public class PantallaDummy extends Fragment implements View.OnClickListener {
             };
 
 
-                break;
+            break;
 
             default:
                 // Try catch vacio. Adrmiralo un momento
